@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class P232C {
-  private static final int NUM_FIBS = 102;
+  private static final int NUM_FIBS = 105;
   private static BigInteger[] fibs = new BigInteger[NUM_FIBS];
 
   public static void main(String args[]) {
@@ -95,34 +95,32 @@ public class P232C {
     if (src.compareTo(nearestRefsToOneFromDst[0]) < 0) {
       // Sequential path in the worst case
       BigInteger sp = dst.subtract(src);
-      if (!dst.equals(fibs[order + 2])) {
-        // Find shortest path from src to dst that goes through one
-        BigInteger spSrcToOne;
-        if (srcIsRefToOne)
-          spSrcToOne = BigInteger.ONE;
-        else {
-          BigInteger spSrcToLowerRefToOne = getShortestPathLength(nearestRefsToOneFromSrc[0], src, order);
-          BigInteger spSrcToHigherRefToOne = getShortestPathLength(
-              src, nearestRefsToOneFromSrc[1].subtract(BigInteger.ONE), order).add(BigInteger.ONE);
-          spSrcToOne = spSrcToLowerRefToOne.min(spSrcToHigherRefToOne).add(BigInteger.ONE);
-        }
-
-        BigInteger spDstToOne;
-        if (dstIsRefToOne)
-          spDstToOne = BigInteger.ONE;
-        else {
-          BigInteger spDstToLowerRefToOne = getShortestPathLength(nearestRefsToOneFromDst[0], dst, order);
-          if (!dst.equals(fibs[order + 2])) {
-            BigInteger spDstToHigherRefToOne = getShortestPathLength(
-                dst, nearestRefsToOneFromDst[1].subtract(BigInteger.ONE), order).add(BigInteger.ONE);
-            spDstToOne = spDstToLowerRefToOne.min(spDstToHigherRefToOne).add(BigInteger.ONE);
-          } else {
-            spDstToOne = spDstToLowerRefToOne;
-          }
-        }
-
-        sp = spSrcToOne.add(spDstToOne);
+      // Find shortest path from src to dst that goes through one
+      BigInteger spSrcToOne;
+      if (srcIsRefToOne)
+        spSrcToOne = BigInteger.ONE;
+      else {
+        BigInteger spSrcToLowerRefToOne = getShortestPathLength(nearestRefsToOneFromSrc[0], src, order);
+        BigInteger spSrcToHigherRefToOne = getShortestPathLength(
+            src, nearestRefsToOneFromSrc[1].subtract(BigInteger.ONE), order).add(BigInteger.ONE);
+        spSrcToOne = spSrcToLowerRefToOne.min(spSrcToHigherRefToOne).add(BigInteger.ONE);
       }
+
+      BigInteger spDstToOne;
+      if (dstIsRefToOne)
+        spDstToOne = BigInteger.ONE;
+      else {
+        BigInteger spDstToLowerRefToOne = getShortestPathLength(nearestRefsToOneFromDst[0], dst, order);
+        if (!dst.equals(fibs[order + 2])) {
+          BigInteger spDstToHigherRefToOne = getShortestPathLength(
+              dst, nearestRefsToOneFromDst[1].subtract(BigInteger.ONE), order).add(BigInteger.ONE);
+          spDstToOne = spDstToLowerRefToOne.min(spDstToHigherRefToOne).add(BigInteger.ONE);
+        } else {
+          spDstToOne = spDstToLowerRefToOne.add(BigInteger.ONE);
+        }
+      }
+
+      sp = spSrcToOne.add(spDstToOne);
 
       // Find shortest path from src to dst that doesn't go through one if it might be shorter
       BigInteger spSrcToHigherRef = getShortestPathLength(
@@ -135,7 +133,7 @@ public class P232C {
    
     // Reduce graph if src and dst are in same graph
     return getShortestPathLength(src.subtract(nearestFibsFromDst[0]),
-        dst.subtract(nearestFibsFromDst[0]), order - 2);
+        dst.subtract(nearestFibsFromDst[0]), order);
   }
 
   private static BigInteger[] nearestFibs(BigInteger target) {
@@ -190,6 +188,8 @@ public class P232C {
       a = b;
       b = temp;
     }
+
+    fibs = result;
 
     return result;
   }
