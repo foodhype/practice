@@ -30,7 +30,7 @@ class ChillyWilly {
      such number exists.
 
      I optimized the hell out of this function only to realize the bottleneck was I/O, so it's
-     fast as hell but could probably be cleaner. */
+     fast but not portable at all. */
   public char[] compute(int n) {
     char[] result;
     if (n < 3) {
@@ -68,7 +68,7 @@ class ChillyWilly {
         result[n - 2] = '8';
         result[n - 1] = '0';
         return result;
-      case 3: // Last three digits 170
+      case 3: // Last three digits are 170
         result[n - 3] = '1';
         result[n - 2] = '7';
         result[n - 1] = '0';
@@ -111,6 +111,7 @@ class InputReader {
       if (numChars <= 0)
         return -1;
     }
+
     return buf[curChar++];
   }
 
