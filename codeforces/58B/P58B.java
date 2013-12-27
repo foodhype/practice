@@ -6,9 +6,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 
+/* This may be the easiest greedy problem I've ever solved. */
 public class P58B {
   public static void main(String args[]) {
     InputReader ir = new InputReader(System.in);
@@ -29,6 +29,9 @@ public class P58B {
 }
 
 class Coins {
+  /* Find the maximum number of denominations of coins that can exist, such 
+     that all smaller denominations are divisible by all larger denominations,
+     where the largest denomination is given. */
   public static ArrayList<Integer> getDenominations(int largestDenomination) {
     ArrayList<Integer> result = new ArrayList<Integer>();
     result.add(largestDenomination);
