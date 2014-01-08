@@ -30,6 +30,8 @@ public class Main {
 }
 
 class MIXTURES {
+  /* The key is that this problem is very similar to finding the minimum cost
+     of performing matrix-chain multiplication. */
   public static int minimumSmoke(int[] mixtures) {
     int size = mixtures.length;
     // dp[i][j] is minimum smoke in range i..j
