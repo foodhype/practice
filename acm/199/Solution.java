@@ -5,7 +5,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.InputMismatchException;
 
 public class Solution {
@@ -33,6 +36,90 @@ public class Solution {
 
 class BeautifulPeople {
   public static int[] maxCompatibleSnobs(Snob[] snobs) {
+    if (snobs.length == 0) {
+      return new int[0];
+    }
+
+    Arrays.sort(snobs);
+    ArrayList<TreeSet<Snob>> buckets = new ArrayList<TreeSet<Snob>>(snobs.length);
+    for (int i = 0; i < snobs.length; i++) {
+      buckets.add(new TreeSet<Snob>());
+    }
+
+    buckets.get(0).add(snobs[0]);
+
+    Snob last = null;
+    int max = 0;
+    for (int i = 0; i < snobs.length; i++) {
+      int low = -1;
+      int high = max;
+      Snob current = snobs[i];
+      Snob lower = null;
+      while (high - low > 1) {
+        int mid = (low + high) / 2;
+        lower = lower(current, buckets.get(mid)); 
+        if (lower != null) {
+          low = mid;
+        } else {
+          high = mid;
+        }
+      }
+
+      boolean inserted = insert(current, buckets.get(low + 1));
+      if (inserted && lower != null) {
+        current.prev(lower);
+      }
+
+      if (low + 2 > max) {
+        last = current;
+        max = low + 2;
+      }
+    }
+
+    int result[] = new int[max];
+    for (int i = max - 1; i >= 0; i--) {
+      result[i] = last.index;
+      last = last.prev();
+    }
+
+    return result;
+  }
+
+  public static Snob lower(Snob val, TreeSet<Snob> bucket) {
+    Snob temp = bucket.ceiling(new Snob(val.strength, -1, -1));
+    if (temp == null || temp.equals(bucket.first())) {
+      return null;
+    } else {
+      Snob lower = bucket.lower(temp);
+      if (lower.beauty < val.beauty) {
+        return lower;
+      } else {
+        return null;
+      }
+    }
+  }
+
+  public static boolean insert(Snob snob, TreeSet<Snob> bucket) {
+    Snob temp = bucket.ceiling(snob);
+
+    if (temp != null && !temp.equals(bucket.first())) {
+      Snob temp2 = bucket.lower(temp);
+      if (temp2.strength == snob.strength && temp2.beauty <= snob.beauty) {
+        return false;
+      }
+    }
+
+    while (temp != null && !temp.equals(bucket.last()) && temp.beauty >= snob.beauty) {
+      Snob temp3 = bucket.higher(temp);
+      bucket.remove(temp);
+      temp = temp3;
+    }
+
+    bucket.add(snob);
+    return true;
+  }
+
+/*  public static int[] maxCompatibleSnobs(Snob[] snobs) {
     Arrays.sort(snobs);
 
     int dp[] = new int[snobs.length];
@@ -71,18 +158,27 @@ class BeautifulPeople {
     }
 
     return result;
-  }
+  }*/
 }
 
 class Snob implements Comparable {
   public final int strength;
   public final int beauty;
   public final int index;
+  private Snob prev;
 
   public Snob(int strength, int beauty, int index) {
     this.strength = strength;
     this.beauty = beauty;
     this.index = index;
+  }
+
+  public Snob prev() {
+    return prev;
+  }
+
+  public void prev(Snob prev) {
+    this.prev = prev;
   }
 
   public int compareTo(Object o) {

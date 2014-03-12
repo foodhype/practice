@@ -1,5 +1,6 @@
 import sys
 
+
 def main():
   dp = [[[0 for _ in xrange(100)] for _ in xrange(100)] for _ in xrange(200)]
 
