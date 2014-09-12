@@ -31,7 +31,7 @@ class Deque(object):
         """Remove and return value from the front of the queue."""
         if self.head is None:
             raise Exception("Empty list")
-        temp = self.head
+        value = self.head.value
         new_head = self.head.next
         if new_head is None:
             self.tail = None
@@ -39,13 +39,13 @@ class Deque(object):
             new_head.prev = None
         self.head = new_head
 
-        return temp.value
+        return value
 
     def pop(self):
         """Remove and return value at the back of the queue."""
         if self.tail is None:
             raise Exception("Empty list")
-        temp = self.tail
+        value = self.tail.value
         new_tail = self.tail.prev
         if new_tail is None:
             self.head = None
@@ -53,13 +53,13 @@ class Deque(object):
             new_tail.next = None
         self.tail = new_tail
 
-        return temp.value
+        return value
+
 
 class Node(object):
-    """Doubly-linked list node class."""
+    """Doubly-linked node class for Deque."""
 
     def __init__(self, value):
         self.value = value
-        self.next = None
         self.prev = None
-
+        self.next = None

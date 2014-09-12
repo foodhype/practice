@@ -1,6 +1,5 @@
 """Heap Sort implentation."""
 
-
 def heapsort(arr):
     for start in reversed(xrange(len(arr) // 2)):
         sift_down(arr, start, len(arr) - 1)
