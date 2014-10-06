@@ -8,58 +8,27 @@ public class Main {
 
         int n = ir.nextInt();
         int m = ir.nextInt();
+        ArrayList<HashMap<Integer, Integer>> graph = new ArrayList<HashMap<Integer, Integer>>(n);
+        for (int i = 0; i <= n; i++) {
+            graph.add(new HashMap<Integer, Integer>());
+        }
 
-        HashMap<Integer, HashMap<Integer, Integer>> graph =
-                new HashMap<Integer, HashMap<Integer, Integer>>();
         for (int i = 0; i < m; i++) {
             int a = ir.nextInt();
             int b = ir.nextInt();
             int w = ir.nextInt();
-
-            if (graph.containsKey(a)) {
-                graph.get(a).put(b, w);
-            } else {
-                HashMap<Integer, Integer> adjList =
-                        new HashMap<Integer, Integer>();
-                adjList.put(b, w);
-                graph.put(a, adjList);
-            }
-
-            if (graph.containsKey(b)) {
-                graph.get(b).put(a, w);
-            } else {
-                HashMap<Integer, Integer> adjList =
-                        new HashMap<Integer, Integer>();
-                adjList.put(a, w);
-                graph.put(b, adjList);
-            }
+            graph.get(a).put(b, w);
+            graph.get(b).put(a, w);
         }
 
-        int[] result = Solution.solve(graph, n);
-        OutputWriter ow = new OutputWriter(System.out);
-        if (result == null) {
-            ow.println(-1);
-        } else {
-            if (result.length == 1) {
-                ow.println(result[0]);
-            } else {
-                ow.print(result[0]);
-                for (int i = 1; i < result.length; i++) {
-                    ow.printSpace();
-                    ow.print(result[i]);
-                }
-                ow.println("");
-            }
-        }
-
-        ow.close();
+        Solution.solve(graph, n);
     }
 }
 
-
+/*
 class Vertex implements Comparable<Vertex> {
     public final int id;
-    public int minDistance;
+    public final int minDistance;
 
     public Vertex(int id, int minDistance) {
         this.id = id;
@@ -70,42 +39,53 @@ class Vertex implements Comparable<Vertex> {
         return minDistance - other.minDistance;
     }
 }
-
+*/
 
 class Solution {
-    public static int[] solve(
-            HashMap<Integer, HashMap<Integer, Integer>> graph, int n) {
-        Integer[] dist = new Integer[n + 1];
-        Integer[] prev = new Integer[n + 1];
-        PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>();
+    public static void solve(
+            ArrayList<HashMap<Integer, Integer>> graph, int n) {
+        final int[] dist = new int[n + 1];
+        int[] prev = new int[n + 1];
+        TreeSet<Integer> queue = new TreeSet<Integer>(new Comparator<Integer>() {
+            public int compare(Integer a, Integer b) {
+                if (dist[a] < dist[b]) {
+                    return -1;
+                }
+                if (dist[a] > dist[b]) {
+                    return 1;
+                }
+                return a - b;
+            }
+        });
+
         dist[1] = 0;
         for (int i = 1; i <= n; i++) {
             if (i != 1) {
                 dist[i] = Integer.MAX_VALUE;
-                prev[i] = null;
             }
-            queue.add(new Vertex(i, dist[i]));
+            prev[i] = -1;
+            queue.add(i);
         }
 
-        HashSet<Integer> visited = new HashSet<Integer>();
-        
-        while (queue.size() > 0) {
-            Vertex current = queue.poll();
-            visited.add(current.id);
+        boolean[] visited = new boolean[n + 1];        
 
-            HashMap<Integer, Integer> neighborEdges = graph.get(current.id);
-            if (neighborEdges != null) {
+        while (queue.size() > 0) {
+            int current = queue.pollFirst();
+            visited[current] = true;
+
+            HashMap<Integer, Integer> neighborEdges = graph.get(current);
+            
+            if (neighborEdges.keySet().size() > 0) {
                 for (int neighbor: neighborEdges.keySet()) {
                     int weight = neighborEdges.get(neighbor);
-
-                    if (!visited.contains(neighbor)) {
-                        int distance = dist[current.id] + weight;
+                    if (!visited[neighbor]) {
+                        int distance = dist[current] + weight;
 
                         if (distance < dist[neighbor]) {
-                            queue.remove(new Vertex(neighbor, dist[neighbor]));
+                            queue.remove(neighbor);
                             dist[neighbor] = distance;
-                            prev[neighbor] = current.id;
-                            queue.add(new Vertex(neighbor, dist[neighbor]));
+                            prev[neighbor] = current;
+                            queue.add(neighbor);
                         }
                     }
                 }
@@ -113,26 +93,32 @@ class Solution {
         }
 
         if (dist[n] == Integer.MAX_VALUE) {
-            return null;
+            System.out.println("" + -1);
         } else {
-            Deque<Integer> stack = new ArrayDeque<Integer>();
-            Integer current = n;
-            while (current != null) {
-                stack.push(current);
+            ArrayList<Integer> result = new ArrayList<Integer>();
+            int current = n;
+            while (current != -1) {
+                result.add(current);
                 current = prev[current];
             }
-            int[] result = new int[stack.size()];
-            int index = 0;
-            while (stack.size() > 0) {
-                result[index] = stack.pop();
-                index++;
-            }
 
-            if (result[0] == 1) {
-                return result;
+            OutputWriter ow = new OutputWriter(System.out);
+            int last = result.size() - 1;
+            if (result.get(last) == 1) {
+                if (last == 0) {
+                    ow.println(result.get(0));
+                } else {
+                    ow.print(result.get(last));
+                    for (int i = last - 1; i >= 0; i--) {
+                        ow.printSpace();
+                        ow.print(result.get(i));
+                    }
+                    ow.println("");
+                }
             } else {
-                return null;
+                ow.println(-1);
             }
+            ow.close();
         }
     }
 }
