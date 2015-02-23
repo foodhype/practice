@@ -6,11 +6,14 @@ public class Main {
     public static void main(String args[]) {
         InputReader ir = new InputReader(System.in);
 
-
+        int n = ir.nextInt();
+        int a = ir.nextInt();
+        int b = ir.nextInt();
+        int c = ir.nextInt();
 
         OutputWriter ow = new OutputWriter(System.out);
 
-
+        ow.println(Solution.solve(n, a, b, c));
 
         ow.close();
     }
@@ -18,7 +21,26 @@ public class Main {
 
 
 class Solution {
-    
+    public static int solve(int n, int a, int b, int c) {
+        int [] reachable = new int[n + 1];
+
+        for (int i = 1; i <= n; i++) {
+            if (i - a >= 0 &&
+                    (i - a == 0 || reachable[i - a] != 0)) {
+                reachable[i] = Math.max(reachable[i], reachable[i - a] + 1);
+            }
+            if (i - b >= 0 &&
+                    (i - b == 0 || reachable[i - b] != 0)) {
+                reachable[i] = Math.max(reachable[i], reachable[i - b] + 1);
+            }
+            if (i - c >= 0 &&
+                    (i - c == 0 || reachable[i - c] != 0)) {
+                reachable[i] = Math.max(reachable[i], reachable[i - c] + 1);
+            }
+        }
+
+        return reachable[n];
+    }
 }
 
 

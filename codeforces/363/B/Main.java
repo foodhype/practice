@@ -6,11 +6,16 @@ public class Main {
     public static void main(String args[]) {
         InputReader ir = new InputReader(System.in);
 
-
+        int n = ir.nextInt();
+        int k = ir.nextInt();
+        int[] fence = new int[n];
+        for (int i = 0; i < n; i++) {
+            fence[i] = ir.nextInt();
+        }
 
         OutputWriter ow = new OutputWriter(System.out);
 
-
+        ow.println(Solution.solve(n, k, fence));
 
         ow.close();
     }
@@ -18,7 +23,25 @@ public class Main {
 
 
 class Solution {
-    
+    public static int solve(int n, int k, int[] fence) {
+        int[] sum_upto = new int[n];
+        sum_upto[0] = fence[0];
+        for (int i = 1; i < n; i++) {
+            sum_upto[i] = sum_upto[i - 1] + fence[i];
+        }
+
+        int j = 1;
+        int min = sum_upto[k - 1];
+        for (int i = k; i < n; i++) {
+            int sum = sum_upto[i] - sum_upto[i - k];
+            if (sum <= min) {
+                j = i - k + 2;
+                min = sum;
+            }
+        }
+
+        return j;
+    }
 }
 
 

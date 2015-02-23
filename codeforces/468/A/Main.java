@@ -6,19 +6,50 @@ public class Main {
     public static void main(String args[]) {
         InputReader ir = new InputReader(System.in);
 
+        int n = ir.nextInt();
 
+        ArrayList<String> result = Solution.solve(n);
 
         OutputWriter ow = new OutputWriter(System.out);
-
-
-
+        if (result.size() > 0) {
+            ow.println("YES");
+            for (String s: result) {
+                ow.println(s);
+            }
+        } else {
+            ow.println("NO");
+        }
         ow.close();
     }
 }
 
 
 class Solution {
-    
+    public static ArrayList<String> solve(int n) {
+        ArrayList<String> result = new ArrayList<String>();
+        if (n < 4) {
+            return result;
+        } else if (n % 2 == 0) {
+            result.add("1 * 2 = 2");
+            result.add("2 * 3 = 6");
+            result.add("6 * 4 = 24");
+            for (int i = 5; i < n; i += 2) {
+                result.add("" + (i + 1) + " - " + i + " = 1");
+                result.add("24 * 1 = 24");
+            }
+        } else {
+            result.add("5 - 2 = 3");
+            result.add("3 - 1 = 2");
+            result.add("3 * 2 = 6");
+            result.add("6 * 4 = 24");
+            for (int i = 6; i < n; i += 2) {
+                result.add("" + (i + 1) + " - " + i + " = 1");
+                result.add("24 * 1 = 24");
+            }
+        }
+
+        return result;
+    }
 }
 
 
