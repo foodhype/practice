@@ -1,0 +1,5 @@
+[package]
+
+name = "recursive_data_structure_test"
+version = "0.0.1"
+authors = ["foodhype <brianschmitz.main@gmail.com>"]
