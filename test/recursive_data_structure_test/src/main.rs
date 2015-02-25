@@ -79,7 +79,11 @@ struct TreeNode<T> {
 
 impl<T: Ord> TreeNode<T> {
     fn new(value: T) -> TreeNode<T> {
-        TreeNode{value: value, left: None, right: None}
+        TreeNode {
+            value: value,
+            left: None,
+            right: None
+        }
     }
 }
 
